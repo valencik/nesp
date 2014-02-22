@@ -7,20 +7,20 @@
   "bugs": "https://github.com/mightyhops/nesp/issues",
   "private": true,
   "contributors": [
-      {
-        "name": "Andrew Valencik",
-        "email": "andrewvalencik@gmail.com",
-        "url": "https://github.com/mightyhops"
-      },
-      {
-        "name": "Glavin Wiechert",
-        "email": "glavin.wiechert@gmail.com",
-        "url": "https://github.com/Glavin001"
-      },
-      {
-        "name": "Michaelangelo Jong",
-        "url": "https://github.com/Mike96Angelo"
-      }
+    {
+      "name": "Andrew Valencik",
+      "email": "andrewvalencik@gmail.com",
+      "url": "https://github.com/mightyhops"
+    },
+    {
+      "name": "Glavin Wiechert",
+      "email": "glavin.wiechert@gmail.com",
+      "url": "https://github.com/Glavin001"
+    },
+    {
+      "name": "Michaelangelo Jong",
+      "url": "https://github.com/Mike96Angelo"
+    }
   ],
   "repository": {
     "type": "git",
@@ -40,7 +40,8 @@
   "dependencies": {
     "canvas": "~1.1.3",
     "socket.io": "~0.9.16",
-    "express": "~3.4.8"
+    "express": "~3.4.8",
+    "node-nes": "~0.1.0"
   },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.7.0",
