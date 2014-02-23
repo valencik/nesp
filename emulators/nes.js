@@ -1,35 +1,49 @@
 var JSNES = require('node-nes')({});
+var communicator = require('../lib/communicator');
+var fs = require('fs');
 
-module.exports = function() {
+module.exports = function(config) {
+    var self = this;
+    
+    var ui = JSNES.ui;
 
-    var self = JSNES.ui;
+    self.loadRom = function(filePath) {
+        ui.updateStatus("Downloading...");
+        fs.readFile(filePath, {encoding: 'binary'}, function(err, data) {
+            if (err) { 
+                console.log(err);
+                return err; 
+            }
+            ui.nes.loadRom(data);
+            ui.nes.start();
+            ui.enable();
+            var canvas = ui.nes.ui.screen[0];
+            /*
+            http.createServer(function (req, res) {
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.end(''
+                    + '<meta http-equiv="refresh" content="1;" />'
+                    + '<img src="' + canvas.toDataURL() + '" />');
+            }).listen(3000);
+            console.log('Server started on port 3000');
+            */
 
-    self.updateStatus("Downloading...");
-    fs.readFile('roms/lj65/lj65.nes', {encoding: 'binary'}, function(err, data) {
-        //console.log(err, data);
-        if (err) { 
-            console.log(err);
-            return err; 
-        }
-        
-        self.nes.loadRom(data);
-        console.log('Start');
-        self.nes.start();
-        console.log('Enable', self.nes.isRunning);
-        self.enable();
-        console.log('Done!');
-        var canvas = self.nes.ui.screen[0];
-        //console.log(self.nes.ui.canvasImageData);
-        console.log(self.nes.frameTime);
+            // Callback for updating audio
+            var updateAudio = config.updateAudio;
+            var parent = new communicator();
+            
+            setInterval(function() {
+                parent.send('frame', canvas.toDataURL());
+            }, 10);
 
-        http.createServer(function (req, res) {
-            res.writeHead(200, { 'Content-Type': 'text/html' });
-            res.end(''
-                + '<meta http-equiv="refresh" content="1;" />'
-                + '<img src="' + canvas.toDataURL() + '" />');
-        }).listen(3000);
-        console.log('Server started on port 3000');
+            ui.nes.opts.emulateSound = true;
+            ui.writeAudio = function(samples) {
+                //console.log('audio');
+                //console.log(samples);
+                parent.send('audio', JSON.stringify(samples));
+            };
 
-    });
-
+        });
+    };
+    return self;
 };

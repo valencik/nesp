@@ -19,7 +19,8 @@ var server = require('http'),
     mime   = require('mime'),
     io     = require('socket.io'),
     Comm   = require('./lib/communicator.js'),
-    dirpublic = 'public';
+    dirpublic = '/public',
+    path = require('path');
 
 ////HTTP REQUEST HANDLER////
 function http_handler(req, res) {
@@ -39,6 +40,7 @@ function http_handler(req, res) {
 
     fs.readFile(__dirname + dirpublic + file, function(err, data) {
         if (err) {
+            console.log(__dirname + dirpublic + file);
             res.writeHead(404);
             return res.end('Error loading ' + file);
         }
@@ -47,7 +49,7 @@ function http_handler(req, res) {
     });
 }
 
-var emulator = new Comm('lib/emulatorFactory.js', ['/roms/lj65/lj65.nes']);
+var emulator = new Comm('lib/emulatorFactory.js', [path.join(__dirname,'/roms/lj65/lj65.nes')]);
 
 function ws_handler(socket) {
     socket.on('control', function(btn){

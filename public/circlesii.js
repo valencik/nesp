@@ -13,7 +13,7 @@ CanvasRenderingContext2D.prototype.fillcircle=function(x_circle, y, r){
     this.fill();
 };
 
-var socket = io.connect("http://localhost:8080");
+var socket = io.connect("http://:8080/");
 FR = 0;var b = new Image();
 socket.on("frame", function(data) {
     var fr=parseInt(1000/(Date.now()-FR));
@@ -25,3 +25,43 @@ socket.on("frame", function(data) {
     document.getElementById('cans').src = data;
     //socket.emit('done');
 });
+
+// Audio
+var dynamicaudio = new DynamicAudio({'swf': 'dynamicaudio.swf'})
+socket.on('audio', function(data) {
+    //console.log(data);
+    dynamicaudio.writeInt(JSON.parse(data));
+});
+
+var sampledata = [];
+var freq = 440;
+var interval = null;
+//var dynamicaudio = new DynamicAudio({'swf': 'dynamicaudio.swf'});
+
+function start() {
+    interval = setInterval(function() {
+        var n = Math.ceil(freq / 100) * 2;
+        for (var i=0; i < n; i++) {
+            dynamicaudio.write(sampledata);
+        }
+    }, 10);
+}
+
+function stop() {
+    if (interval != null) {
+        clearInterval(interval);
+        interval = null;
+    }
+}
+
+(function generateWaveform() {
+    freq = 440;
+    // we're playing at 44.1kHz, so figure out how many samples
+    // will give us one full period
+    var samples = 44100 / freq;
+    sampledata = Array(Math.round(samples));
+    for (var i=0; i < sampledata.length; i++) {
+        sampledata[i] = Math.sin(2*Math.PI * (i / sampledata.length));
+    }
+})();
+
