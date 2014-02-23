@@ -128,7 +128,7 @@ function ws_handler(socket) {
 }
 
 var publicDir = __dirname + '/public/';
-app.use(express.directory(publicDir));
+//app.use(express.directory(publicDir));
 app.use(express.static(publicDir));
 
 io.sockets.on('connection', ws_handler);
