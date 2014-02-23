@@ -1,17 +1,17 @@
-CanvasRenderingContext2D.prototype.fillcircle=function(x_circle, y, r){
-    var x;
-    if (typeof x_circle === 'object') {
-        x = x_circle.x;
-        y = x_circle.y;
-        r = x_circle.r;
-    } else {
-        x = x_circle;
+
+var Canvas = function Canvas(id, context) {
+    var canvas = document.getElementById(id);
+    var can = canvas.getContext(context);
+    can.width = canvas.width = 256;
+    can.height = canvas.height = 240;
+    can.clear = function clear() {
+        this.clearRect(0,0,this.width,this.height);
     }
-    this.beginPath();
-    this.arc(x,y,r,0,2*Math.PI);
-    this.closePath();
-    this.fill();
-};
+
+    return can;
+}
+
+var c = new Canvas('can', '2d');
 
 var socket = io.connect("http://:8080/");
 FR = 0;var b = new Image();
@@ -22,6 +22,7 @@ socket.on("frame", function(data) {
     c.clear();
     //c.drawImage(b,0,0);
     c.fillText("fr: " + fr,60,10);
+    //console.log(data);
     document.getElementById('cans').src = data;
     //socket.emit('done');
 });

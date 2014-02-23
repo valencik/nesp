@@ -32,6 +32,12 @@ module.exports = function(config) {
             var updateAudio = config.updateAudio;
             var parent = new communicator();
             
+            parent.on('control', function (key){
+                
+            });
+
+
+
             setInterval(function() {
                 parent.send('frame', canvas.toDataURL());
             }, 10);
