@@ -33,6 +33,15 @@ server.listen(port, function() {
 //var emulator = new Comm('lib/emulatorFactory.js', [path.join(__dirname,'/roms/lj65/lj65.nes')]);
 
 var running = {};
+var roomForEmulator = function(emu) {
+    for( var prop in running ) {
+        if( running.hasOwnProperty( prop ) ) {
+             if( running[ prop ] === emu )
+                  return prop;
+        }
+    }
+};
+
 
 function genHash() {
     var current_date = (new Date()).valueOf().toString();
@@ -59,6 +68,15 @@ function ws_handler(socket) {
     socket.on('createRoom', function(data, callback) {
         var filePath = data.filePath;
         var room = genHash();
+
+        // Check if socket is already in a room
+        if (socket.emulator) {
+            var emu = socket.emulator;
+            var oldRoom = roomForEmulator(emu);
+            //console.log('leave room',oldRoom);
+            socket.leave(oldRoom);
+            socket.emulator = null;
+        }
 
         var emulator = createGame(filePath, room);
 
