@@ -33,7 +33,7 @@ module.exports = function(config) {
             var parent = new communicator();
             
             parent.on('control', function (key){
-                
+                JSNES.keyboard.setKey(key[0][0], key[0][1]);
             });
 
 
