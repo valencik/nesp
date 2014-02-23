@@ -42,7 +42,7 @@ module.exports = function(config) {
                 parent.send('frame', canvas.toDataURL());
             }, 10);
 
-            ui.nes.opts.emulateSound = true;
+            //ui.nes.opts.emulateSound = false;//true;
             ui.writeAudio = function(samples) {
                 //console.log('audio');
                 //console.log(samples);
