@@ -1,32 +1,67 @@
 <!DOCTYPE html>
-<html charset="utf8">
+<html lang="en" charset="utf8">
   <head>
-    <style>
-      * { margin: 0; padding: 0;}
+    <link rel="stylesheet" type="text/css" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
-body, html { height:100%; }
-
-#can {
-    position:absolute;
-    width:256px;
-    height:240px;
-    border: 3px solid black;
-}
-    </style>
+    <link rel="stylesheet" type="text/css" href="style.css">
   </head>
 
   <body>
-    <label>File Path</label>
-    <input type="text" id="filePath" placeholder="Enter file path" value="/roms/lj65/lj65.nes"/>
-    <button onclick="startGame()">Create</button>
 
-    <img id="cans"></img>
-  
+    <div class="container">
+
+        <div class="page-header">
+          <h1>NESP <small>Node Emulator Service Platform</small></h1>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6">
+            <div class="input-group">
+            <!--
+                <input type="text" class="form-control" id="filePath"  placeholder="Enter file path" value="/roms/lj65/lj65.nes">
+                -->
+                <select class="form-control">
+                <option>Select an existing ROM</option><optgroup label="Working"><option value="roms/Bubble Bobble (U).nes">Bubble Bobble</option><option value="roms/Contra (U) [!].nes">Contra</option><option value="roms/Donkey Kong (JU).nes">Donkey Kong</option><option value="roms/Dr. Mario (JU).nes">Dr. Mario</option><option value="roms/Golf (JU).nes">Golf</option><option value="roms/Legend of Zelda, The (U) (PRG1).nes">The Legend of Zelda</option><option value="roms/Lemmings (U).nes">Lemmings</option><option value="roms/Lifeforce (U).nes">Lifeforce</option><option value="roms/Mario Bros. (JU) [!].nes">Mario Bros.</option><option value="roms/Mega Man (U).nes">Mega Man</option><option value="roms/Pac-Man (U) [!].nes">Pac-Man</option><option value="roms/Super Mario Bros. (JU) (PRG0) [!].nes">Super Mario Bros.</option><option value="roms/Super Mario Bros. 3 (U) (PRG1) [!].nes">Super Mario Bros. 3</option><option value="roms/Tennis (JU) [!].nes">Tennis</option><option value="roms/Tetris (U) [!].nes">Tetris</option><option value="roms/Tetris 2 (U) [!].nes">Tetris 2</option><option value="roms/Zelda II - The Adventure of Link (U).nes">Zelda II - The Adventure of Link</option></optgroup><optgroup label="Nearly Working"><option value="roms/Duck Hunt (JUE) [!].nes">Duck Hunt</option></optgroup></select>
+
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button" onclick="startGame()">Play Game!</button>
+                    <button class="btn btn-default" type="button" onclick="startGame()">Upload</button>
+                </span>
+            </div><!-- /input-group -->
+          </div><!-- /.col-lg-6 -->
+          
+          <br/>
+
+            </div><!-- /.row -->
+            
+
+        </div><!-- /.row -->
+
+        <br/>
+
+        <div class="jumbotron text-center">
+
+            <p>
+                <img id="cans"></img>
+            </p>
+            <p class="">
+                <a class="btn btn-primary btn-lg" role="button">Learn more</a>
+                <a class="btn btn-primary btn-lg" role="button">Reset</a>
+                <a class="btn btn-primary btn-lg" role="button">Share</a>
+            </p>
+        </div>
+    
+    </div>
+
+    <script src="bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+
     <script src="dynamicaudio-min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     
-    <script src="/circlesii.js"></script>
-    <script src="/objects.js"></script>
+    <script src="circlesii.js"></script>
+    <script src="objects.js"></script>
 
   </body>
 </html>

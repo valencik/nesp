@@ -72,7 +72,7 @@ if(window.location.hash) {
         } 
         else 
         {
-            window.location.hash = null;
+            history.pushState('', document.title, window.location.pathname);
         }
     });
 } else {
