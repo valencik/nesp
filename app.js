@@ -19,7 +19,7 @@ var server = require('http'),
     mime   = require('mime'),
     io     = require('socket.io'),
     Comm   = require('./lib/communicator.js'),
-    dirpublic = '';
+    dirpublic = 'public';
 
 ////HTTP REQUEST HANDLER////
 function http_handler(req, res) {
