@@ -16,10 +16,14 @@ body, html { height:100%; }
   </head>
 
   <body>
+    <label>File Path</label>
+    <input type="text" id="filePath" placeholder="Enter file path" value="/roms/lj65/lj65.nes"/>
+    <button onclick="startGame()">Create</button>
+
     <img id="cans"></img>
   
     <script src="dynamicaudio-min.js"></script>
-    <script src="http://localhost:8080/socket.io/socket.io.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     
     <script src="/circlesii.js"></script>
     <script src="/objects.js"></script>

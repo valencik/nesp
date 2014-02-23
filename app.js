@@ -13,15 +13,24 @@ var nesp = require('./lib/nesp');
  */
 
 ////GLOBAL VARIABLES////
-var server = require('http'),
-    fs     = require('fs'),
+var fs     = require('fs'),
+    crypto = require('crypto'),
     url    = require('url'),
     mime   = require('mime'),
-    io     = require('socket.io'),
     Comm   = require('./lib/communicator.js'),
     dirpublic = '/public',
-    path = require('path');
+    path = require('path'),
+    express = require('express'),
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
 
+var port = 8080;
+server.listen(port, function() {
+    console.log('Listening on '+port);
+});
+
+/*
 ////HTTP REQUEST HANDLER////
 function http_handler(req, res) {
     var request = url.parse(req.url, true),
@@ -48,6 +57,7 @@ function http_handler(req, res) {
         res.end(data);
     });
 }
+*/
 
 //var emulator = new Comm('lib/emulatorFactory.js', [path.join(__dirname,'/roms/lj65/lj65.nes')]);
 
@@ -59,21 +69,21 @@ function genHash() {
     return crypto.createHash('sha1').update(current_date + random).digest('hex');
 };
 
-function createGame (filepath, room) {
-        var emulator = new Comm('lib/emulatorFactory.js', [path.join(__dirname,filePath)]);
-        emulator.on('frame', function (data){
-            io.sockets.in('room').emit('frame', data);
+function createGame (filePath, room) {
+        var emulator = new Comm('lib/emulatorFactory.js', [path.join(__dirname, filePath)]);
+        emulator.on('frame', function (data) {
+            //console.log(data);
+            io.sockets.in(room).emit('frame', data);
             //io.sockets.emit('frame', data);
         });
         emulator.on('audio', function (data){
             //io.sockets.emit('audio', data);
-            io.sockets.in('room').emit('audio', data);
+            io.sockets.in(room).emit('audio', data);
         });
         return emulator;
 }
 
 function ws_handler(socket) {
-
 
     socket.on('createRoom', function(data, callback) {
         var filePath = data.filePath;
@@ -83,7 +93,10 @@ function ws_handler(socket) {
 
         running[room] = emulator;
         
+        console.log(filePath, room);
+
         socket.join(room);
+        socket.emulator = emulator;
 
         callback && callback({
             room: room
@@ -94,23 +107,33 @@ function ws_handler(socket) {
     socket.on('leaveRoom', function(data) {
         var room = data.room;
         socket.leave(room);
+        socket.emulator = null;
     });
 
-    socket.on('joinRoom', function(data) {
+    socket.on('joinRoom', function(data, callback) {
         var room = data.room;
         socket.join(room);
+        socket.emulator = running[room];
+        if (socket.emulator) {
+            callback && callback(true);
+        }
+        else{
+            callback && callback(false);
+        }
     });
 
 
     socket.on('control', function(btn){
+        var emulator = socket.emulator;
         emulator.send('control', btn);
     });
 }
 
+var publicDir = __dirname + '/public/';
+app.use(express.directory(publicDir));
+app.use(express.static(publicDir));
 
-
-io = io.listen(8080);
 io.sockets.on('connection', ws_handler);
 io.set('log level', 1);
 
-server.createServer(http_handler).listen(8000);
+//server.createServer(http_handler).listen(8000);

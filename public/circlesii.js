@@ -27,9 +27,63 @@ socket.on("frame", function(data) {
     //socket.emit('done');
 });
 
-socket.emit('createGame', {filepath: '/roms/lj65/lj65.nes'}, function(data) {
-    console.log(data);
-})
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function insertParam(key,value)
+{
+    key = encodeURI(key); value = encodeURI(value);
+
+    var s = document.location.search;
+    var kvp = key+"="+value;
+
+    var r = new RegExp("(&|\\?)"+key+"=[^\&]*");
+
+    s = s.replace(r,"$1"+kvp);
+
+    if(!RegExp.$1) {s += (s.length>0 ? '&' : '?') + kvp;};
+
+    //again, do what you will here
+    document.location.search = s;
+}
+
+
+function startGame () {
+    var el = document.getElementById('filePath');
+    var filePath = el.value;
+    socket.emit('createRoom', {filePath: filePath }, function(data) {
+        console.log(data);
+        window.location.hash = data.room;
+    });
+}
+
+if(window.location.hash) {
+    var hash = window.location.hash.substring(1); //Puts hash in variable, and removes the # character
+    console.log(hash);
+    // hash found
+    socket.emit('joinRoom', {room: hash}, function(success) {
+        console.log(success);
+        if (success) {
+
+        } 
+        else 
+        {
+            window.location.hash = null;
+        }
+    });
+} else {
+    // No hash found
+    /*
+    socket.emit('createRoom', {filePath: '/roms/lj65/lj65.nes'}, function(data) {
+        console.log(data);
+        window.location.hash = data.room;
+    });
+*/
+}
 
 // Audio
 var dynamicaudio = new DynamicAudio({'swf': 'dynamicaudio.swf'})
@@ -142,7 +196,7 @@ keys = {
         KEY_RIGHT: 7
     };
 
-
+var oldState, currentKey, player;
 function toggleKey(key, state) {
     oldState, currentKey, player;
 
