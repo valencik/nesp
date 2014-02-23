@@ -27,6 +27,10 @@ socket.on("frame", function(data) {
     //socket.emit('done');
 });
 
+socket.emit('createGame', {filepath: '/roms/lj65/lj65.nes'}, function(data) {
+    console.log(data);
+})
+
 // Audio
 var dynamicaudio = new DynamicAudio({'swf': 'dynamicaudio.swf'})
 socket.on('audio', function(data) {
