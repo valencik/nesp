@@ -30,35 +30,6 @@ server.listen(port, function() {
     console.log('Listening on '+port);
 });
 
-/*
-////HTTP REQUEST HANDLER////
-function http_handler(req, res) {
-    var request = url.parse(req.url, true),
-        file    = request.pathname;
-
-    if (file.lastIndexOf('.') < file.lastIndexOf('/')) {
-        if (file.lastIndexOf('/') < file.length-1) {
-            file += '/index.html';
-        } else {
-            file += 'index.html';
-        }
-    }
-
-    var mimeType = mime.lookup(__dirname + dirpublic + file),
-        message  = mimeType + ' >> ' + file;
-
-    fs.readFile(__dirname + dirpublic + file, function(err, data) {
-        if (err) {
-            console.log(__dirname + dirpublic + file);
-            res.writeHead(404);
-            return res.end('Error loading ' + file);
-        }
-        res.writeHead(200, {'Content-Type': mimeType});
-        res.end(data);
-    });
-}
-*/
-
 //var emulator = new Comm('lib/emulatorFactory.js', [path.join(__dirname,'/roms/lj65/lj65.nes')]);
 
 var running = {};
@@ -104,14 +75,39 @@ function ws_handler(socket) {
 
     });
 
-    socket.on('leaveRoom', function(data) {
-        var room = data.room;
+    var leaveRoom = function(room) {
         socket.leave(room);
         socket.emulator = null;
+    };
+    var checkForEmptyRooms = function() {
+        var rooms = io.sockets.manager.rooms;
+        for (room in rooms) {
+            var r = room.substring(1);
+            if (io.sockets.clients(room).length < 1){
+                 //delete room logic here
+                 console.log('Delete room', r);
+                 var emulator = running[r];
+                 if (emulator) {
+                    console.log(emulator);
+                     //emulator.kill();
+                 }
+            }
+        }
+    };
+
+    socket.on('leaveRoom', function(data) {
+        var room = data.room;
+        leaveRoom(room);
+        checkForEmptyRooms();
+    });
+
+    socket.on('disconnect',function() {
+        checkForEmptyRooms();
     });
 
     socket.on('joinRoom', function(data, callback) {
         var room = data.room;
+        console.log('joinRoom', room);
         socket.join(room);
         socket.emulator = running[room];
         if (socket.emulator) {
@@ -125,7 +121,9 @@ function ws_handler(socket) {
 
     socket.on('control', function(btn){
         var emulator = socket.emulator;
-        emulator.send('control', btn);
+        if (socket.emulator) {
+            emulator.send('control', btn);
+        }
     });
 }
 
