@@ -11,7 +11,7 @@ var Canvas = function Canvas(id, context) {
     return can;
 }
 
-var c = new Canvas('can', '2d');
+//var c = new Canvas('can', '2d');
 
 var socket = io.connect("http://:8080/");
 FR = 0;var b = new Image();
@@ -19,9 +19,9 @@ socket.on("frame", function(data) {
     var fr=parseInt(1000/(Date.now()-FR));
     FR = Date.now();
     //b.src = data;
-    c.clear();
+    //c.clear();
     //c.drawImage(b,0,0);
-    c.fillText("fr: " + fr,60,10);
+    //c.fillText("fr: " + fr,60,10);
     //console.log(data);
     document.getElementById('cans').src = data;
     //socket.emit('done');
@@ -126,11 +126,8 @@ var controller = {
     ],
     player1_state : [0,0,0,0,0,0,0,0],
     player2_state : [0,0,0,0,0,0,0,0]
-};
-
-
-function toggleKey(key, state) {
-    var keys = {
+},
+keys = {
         KEY_A: 0,
         KEY_B: 1,
         KEY_SELECT: 2,
@@ -139,7 +136,10 @@ function toggleKey(key, state) {
         KEY_DOWN: 5,
         KEY_LEFT: 6,
         KEY_RIGHT: 7
-    },
+    };
+
+
+function toggleKey(key, state) {
     oldState, currentKey, player;
 
     switch (key) {
