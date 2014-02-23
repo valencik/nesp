@@ -1,6 +1,6 @@
 var JSNES = require('node-nes')({});
 
-module.export = function() {
+module.exports = function() {
 
     var self = JSNES.ui;
 
